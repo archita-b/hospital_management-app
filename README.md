@@ -6,7 +6,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ### 1. Register a patient
 
-**Endpoint**: `POST /register`
+**Endpoint**: `POST /patients`
 **Description**: Registers a new patient.
 
 #### Parameters:
@@ -20,44 +20,42 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 #### Response:
 
 - **body**: An object containing patient details.
-- **status**: 201 created.
+- **status**: `201 created`
 
---
+---
 
 ### 2. Login
 
-**Endpoint**: `POST /login`
+**Endpoint**: `POST /users`
 **Description**: Logs in a registered patient.
 
 #### Parameters:
 
-- `username`: Patient's username.
-- `password`: Patient's password.
+- `username`: User's username.
+- `password`: User's password.
 
 #### Response:
 
-- **body**: A cookie containing user details
-- **status**: 201 created
+- **cookie**: A cookie containing user details.
+- **status**: `201 created`
 
---
+---
 
 ### 3. Book an appointment
 
-**Endpoint**: `POST /appointment`
+**Endpoint**: `POST /appointments/me`
 **Description**: Books an appointment with a doctor.
 
 #### Parameters:
 
-- `patient_id`: id of the patient booking the appointment.
-- `doctor_id`: id of the doctor.
 - `slot`: id of the available time slot.
 
 #### Response:
 
 - **body**: An object with appointment details
-- **status**: 201 created
+- **status**: `201 created`
 
---
+---
 
 ### 4. Reschedule an appointment
 
@@ -67,14 +65,13 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 #### Parameters:
 
 - `appointment_id`: id of an appointment to reschedule.
-- `slot_id`: id of the new slot.
 
 #### Response:
 
 - **body**: Object containing updated details.
-- **status**: 200 OK
+- **status**: `200 OK`
 
---
+---
 
 ### 5. Cancel an appointment
 
@@ -87,4 +84,4 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 #### Response:
 
-- **status**: 200 OK
+- **status**: `204 OK`
