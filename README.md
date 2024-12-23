@@ -31,7 +31,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 #### Parameters:
 
-- `username`: User's username.
+- `username`: User's name.
 - `password`: User's password.
 
 #### Response:

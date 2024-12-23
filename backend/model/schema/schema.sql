@@ -4,7 +4,7 @@ CREATE TYPE appointment_status AS ENUM ('scheduled', 'cancelled', 'rescheduled')
 -- only for form login
 CREATE TABLE auth (
     username VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE patients (
@@ -13,7 +13,7 @@ CREATE TABLE patients (
     gender gender_enum NOT NULL,
     dob DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
@@ -26,7 +26,7 @@ CREATE TABLE doctors (
     description VARCHAR(255),
     fees INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
     deleted_at TIMESTAMP
 );
 
@@ -44,6 +44,7 @@ CREATE TABLE appointments (
     slot INT REFERENCES time_slots(slot_id),
     status appointment_status DEFAULT 'scheduled',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP
 );
 
