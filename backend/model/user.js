@@ -1,11 +1,10 @@
 import pool from "./database.js";
 
 export async function getPatient(userName) {
-  const results = await pool.query(
-    "SELECT * FROM patients WHERE patient_id = $1",
-    [userName]
-  );
-  return results.rows[0];
+  const result = await pool.query("SELECT * FROM auth WHERE username = $1", [
+    userName,
+  ]);
+  return result.rows[0];
 }
 
 export async function registerPatientDB(
@@ -40,4 +39,12 @@ export async function registerPatientDB(
     gender: patientResult.rows[0].gender,
     dob: patientResult.rows[0].dob,
   };
+}
+
+export async function createSession(userId) {
+  const result = await pool.query(
+    "INSERT INTO sessions (user_id) VALUES ($1) RETURNING session_id",
+    [userId]
+  );
+  return result.rows[0];
 }

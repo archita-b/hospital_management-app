@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
-import { getPatient, registerPatientDB } from "../model/user.js";
+
+import { createSession, getPatient, registerPatientDB } from "../model/user.js";
 
 export async function registerPatient(req, res, next) {
   try {
@@ -35,6 +36,34 @@ export async function registerPatient(req, res, next) {
     });
   } catch (error) {
     console.log("Error in registerPatient controller");
+    next(error);
+  }
+}
+
+export async function login(req, res, next) {
+  try {
+    const { userName, password } = req.body;
+
+    const user = await getPatient(userName);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!user || !isPasswordCorrect) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
+
+    const { session_id: sessionId } = await createSession(user.userName);
+
+    res
+      .cookie("sessionId", sessionId, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      })
+      .status(201)
+      .json({
+        message: "Session created.",
+      });
+  } catch (error) {
+    console.log("Error in login controller");
     next(error);
   }
 }
