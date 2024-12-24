@@ -26,7 +26,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ### 2. Login
 
-**Endpoint**: `POST /users`
+**Endpoint**: `POST /sessions`
 **Description**: Logs in a registered patient.
 
 #### Parameters:
@@ -36,7 +36,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 #### Response:
 
-- **cookie**: A cookie containing user details.
+- **cookie**: A cookie containing session ID.
 - **status**: `201 created`
 
 ---

@@ -48,3 +48,11 @@ export async function createSession(userId) {
   );
   return result.rows[0];
 }
+
+export async function deleteSession(sessionId) {
+  const result = await pool.query(
+    "UPDATE sessions SET expired = true WHERE session_id = $1 RETURNING expired",
+    [sessionId]
+  );
+  return result.rows[0];
+}

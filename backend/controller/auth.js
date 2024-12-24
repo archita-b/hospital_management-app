@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 
-import { createSession, getPatient, registerPatientDB } from "../model/user.js";
+import {
+  createSession,
+  deleteSession,
+  getPatient,
+  registerPatientDB,
+} from "../model/user.js";
 
 export async function registerPatient(req, res, next) {
   try {
@@ -64,6 +69,25 @@ export async function login(req, res, next) {
       });
   } catch (error) {
     console.log("Error in login controller");
+    next(error);
+  }
+}
+
+export async function logout(req, res, next) {
+  try {
+    const { sessionId } = req.cookies;
+    if (!sessionId) {
+      return res.status(400).json({ error: "No active session found." });
+    }
+
+    const session = await deleteSession(sessionId);
+
+    if (session.expired) {
+      res.clearCookie("sessionId");
+      res.status(204).json({ message: "Session expired." });
+    }
+  } catch (error) {
+    console.log("Error in logout controller.");
     next(error);
   }
 }
