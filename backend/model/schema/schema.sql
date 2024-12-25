@@ -8,7 +8,7 @@ CREATE TABLE auth (
 );
 
 CREATE TABLE patients (
-    patient_id  VARCHAR(100) PRIMARY KEY REFERENCES auth(username),
+    patient  VARCHAR(100) PRIMARY KEY REFERENCES auth(username),
     full_name VARCHAR(100) NOT NULL,
     gender gender_enum NOT NULL,
     dob DATE,
@@ -18,7 +18,7 @@ CREATE TABLE patients (
 );
 
 CREATE TABLE doctors (
-    doctor_id VARCHAR(100) PRIMARY KEY REFERENCES auth(username),
+    doctor VARCHAR(100) PRIMARY KEY REFERENCES auth(username),
     full_name VARCHAR(100) NOT NULL,
     gender gender_enum NOT NULL,
     dob DATE,
@@ -32,7 +32,7 @@ CREATE TABLE doctors (
 
 CREATE TABLE time_slots (
     slot_id SERIAL PRIMARY KEY,
-    doctor_id VARCHAR(100) REFERENCES doctors(doctor_id),
+    doctor VARCHAR(100) REFERENCES doctors(doctor),
     slot_date DATE NOT NULL,
     start_time TIME NOT NULL,
     duration INT NOT NULL CHECK (duration > 0)
@@ -40,7 +40,7 @@ CREATE TABLE time_slots (
 
 CREATE TABLE appointments (
     appointment_id SERIAL PRIMARY KEY,
-    patient_id VARCHAR(100) REFERENCES patients(patient_id),
+    patient VARCHAR(100) REFERENCES patients(patient),
     slot INT REFERENCES time_slots(slot_id),
     status appointment_status DEFAULT 'scheduled',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -49,8 +49,7 @@ CREATE TABLE appointments (
 );
 
 CREATE TABLE sessions (
-    user_id VARCHAR(100) REFERENCES auth(username),
-    session_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    expired BOOLEAN DEFAULT FALSE
+    username VARCHAR(100) REFERENCES auth(username),
+    session_id UUID PRIMARY KEY DEFAULT gen_random_uuid()
 );
 

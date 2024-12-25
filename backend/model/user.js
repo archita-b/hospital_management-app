@@ -49,10 +49,14 @@ export async function createSession(userId) {
   return result.rows[0];
 }
 
-export async function deleteSession(sessionId) {
+export async function getSession(sessionId) {
   const result = await pool.query(
-    "UPDATE sessions SET expired = true WHERE session_id = $1 RETURNING expired",
+    "SELECT * FROM sessions WHERE session_id = $1",
     [sessionId]
   );
-  return result.rows[0];
+  return result.rows;
+}
+
+export async function deleteSession(sessionId) {
+  await pool.query("DELETE FROM sessions WHERE session_id = $1", [sessionId]);
 }

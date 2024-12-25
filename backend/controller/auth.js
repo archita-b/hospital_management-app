@@ -12,12 +12,12 @@ export async function registerPatient(req, res, next) {
     const { userName, password, fullName, gender, dob } = req.body;
 
     if (!userName || !password || !fullName || !gender || !dob) {
-      res.status(400).json({ error: "All fields are required." });
+      return res.status(400).json({ error: "All fields are required." });
     }
 
     const existingPatient = await getPatient(userName);
     if (existingPatient) {
-      res.status(400).json({ error: "Username already exists." });
+      return res.status(400).json({ error: "Username already exists." });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -56,7 +56,7 @@ export async function login(req, res, next) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const { session_id: sessionId } = await createSession(user.userName);
+    const { session_id: sessionId } = await createSession(user.username);
 
     res
       .cookie("sessionId", sessionId, {
@@ -80,12 +80,10 @@ export async function logout(req, res, next) {
       return res.status(400).json({ error: "No active session found." });
     }
 
-    const session = await deleteSession(sessionId);
+    await deleteSession(sessionId);
 
-    if (session.expired) {
-      res.clearCookie("sessionId");
-      res.status(204).json({ message: "Session expired." });
-    }
+    res.clearCookie("sessionId");
+    res.sendStatus(204);
   } catch (error) {
     console.log("Error in logout controller.");
     next(error);
