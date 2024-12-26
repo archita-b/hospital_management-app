@@ -1,11 +1,7 @@
 import bcrypt from "bcrypt";
 
-import {
-  createSession,
-  deleteSession,
-  getPatient,
-  registerPatientDB,
-} from "../model/user.js";
+import { getPatient, registerPatientDB } from "../model/patients.js";
+import { createSession, deleteSession } from "../model/sessions.js";
 
 export async function registerPatient(req, res, next) {
   try {
