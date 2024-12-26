@@ -13,7 +13,7 @@ export async function getSession(sessionId) {
     "SELECT * FROM sessions WHERE session_id = $1",
     [sessionId]
   );
-  return result.rows;
+  return result.rows[0];
 }
 
 export async function deleteSession(sessionId) {

@@ -1,9 +1,9 @@
 import express from "express";
 
-import { makeAppointment } from "../controller/appointment.js";
+import { bookAppointment } from "../controller/appointment.js";
 
 const router = express.Router();
 
-router.post("/appointment", makeAppointment);
+router.post("/appointments/me", bookAppointment);
 
 export default router;
