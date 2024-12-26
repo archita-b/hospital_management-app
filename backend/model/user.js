@@ -21,7 +21,7 @@ export async function registerPatientDB(
 
   const authResult = await pool.query(authQuery, [userName, password]);
 
-  const patientQuery = `INSERT INTO patients (patient_id, full_name, gender, dob) 
+  const patientQuery = `INSERT INTO patients (patient, full_name, gender, dob) 
                         VALUES ($1, $2, $3, $4) RETURNING *`;
 
   const patientResult = await pool.query(patientQuery, [
@@ -43,7 +43,7 @@ export async function registerPatientDB(
 
 export async function createSession(userId) {
   const result = await pool.query(
-    "INSERT INTO sessions (user_id) VALUES ($1) RETURNING session_id",
+    "INSERT INTO sessions (username) VALUES ($1) RETURNING session_id",
     [userId]
   );
   return result.rows[0];
