@@ -82,6 +82,11 @@ export async function cancelAppointment(req, res, next) {
     res.sendStatus(204);
   } catch (error) {
     console.log("Error in cancelAppointment controller.");
+
+    if (error.message === "Appointment does not exist.") {
+      return res.status(400).json({ error: error.message });
+    }
+
     next(error);
   }
 }
