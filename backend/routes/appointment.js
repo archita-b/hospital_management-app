@@ -5,10 +5,11 @@ import {
   rescheduleAppointment,
   cancelAppointment,
 } from "../controller/appointment.js";
+import { isLoggedIn } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/appointments/me", bookAppointment);
+router.post("/appointments/me", isLoggedIn, bookAppointment);
 router.put("/appointments/:id", rescheduleAppointment);
 router.delete("/appointments/:id", cancelAppointment);
 

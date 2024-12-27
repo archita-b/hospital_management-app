@@ -11,5 +11,8 @@ INSERT INTO doctors (doctor, full_name, gender, speciality) VALUES
 
 INSERT INTO time_slots (doctor, slot_date, start_time, duration) VALUES
                  ('docA', '01-01-2025', '11:00', 30),
+                 ('docA', '01-01-2025', '11:30', 30),
                  ('docB', '29-12-2024', '12:00', 30),
+                 ('docB', '29-12-2024', '14:00', 30),
                  ('docC', '28-12-2024', '14:30', 45);
+                 ('docC', '28-12-2024', '15:30', 45);

@@ -71,10 +71,7 @@ export async function login(req, res, next) {
 
 export async function logout(req, res, next) {
   try {
-    const { sessionId } = req.cookies;
-    if (!sessionId) {
-      return res.status(400).json({ error: "No active session found." });
-    }
+    const sessionId = req.sessionId;
 
     await deleteSession(sessionId);
 

@@ -4,18 +4,10 @@ import {
   rescheduleAppointmentDB,
 } from "../model/appointment.js";
 import { checkPatientExists } from "../model/patients.js";
-import { getSession } from "../model/sessions.js";
 
 export async function bookAppointment(req, res, next) {
   try {
-    const { sessionId } = req.cookies;
-    const activeSession = await getSession(sessionId);
-
-    if (!sessionId || !activeSession) {
-      return res.status(401).json({ error: "Invalid session." });
-    }
-
-    const patient = activeSession.username;
+    const patient = req.userName;
     const doesPatientExist = await checkPatientExists(patient);
     if (!doesPatientExist) {
       return res.status(422).json({ error: "Patient does not exist." });
@@ -30,8 +22,8 @@ export async function bookAppointment(req, res, next) {
     const appointmentDetails = await bookAppointmentDB(patient, slot);
 
     res.status(201).json({
-      data: appointmentDetails,
       message: "Appointment booked successfully.",
+      data: appointmentDetails,
     });
   } catch (error) {
     console.log("Error in bookAppointment controller.");
@@ -63,8 +55,8 @@ export async function rescheduleAppointment(req, res, next) {
     );
 
     res.status(200).json({
-      data: rescheduledAppointment,
       message: "Appointment rescheduled successfully.",
+      data: rescheduledAppointment,
     });
   } catch (error) {
     console.log("Error in rescheduleAppointment controller.");
@@ -86,6 +78,7 @@ export async function cancelAppointment(req, res, next) {
     const appointmentId = req.params.id;
 
     await cancelAppointmentDB(appointmentId);
+
     res.sendStatus(204);
   } catch (error) {
     console.log("Error in cancelAppointment controller.");
