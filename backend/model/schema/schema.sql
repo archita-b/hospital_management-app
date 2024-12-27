@@ -44,8 +44,7 @@ CREATE TABLE appointments (
     slot INT REFERENCES time_slots(slot_id),
     status appointment_status DEFAULT 'scheduled',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
+    updated_at TIMESTAMP
 );
 
 CREATE TABLE sessions (
