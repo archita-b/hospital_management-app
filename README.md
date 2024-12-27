@@ -23,7 +23,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-    "message": "Patient registered successfully",
+    "message": "Patient registered successfully.",
     "data": {
         "fullName": "patient's full name",
         "userName": "patient's username,
@@ -39,7 +39,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Username already exists"
+  "message": "Username already exists."
 }
 ```
 
@@ -63,7 +63,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "session created"
+  "message": "Session created."
 }
 ```
 
@@ -73,7 +73,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "error": "Invalid username or password"
+  "error": "Invalid username or password."
 }
 ```
 
@@ -88,7 +88,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 #### Parameters:
 
-- `slot`: id of the available time slot.
+- `slot`: ID of the available time slot.
 
 #### Response:
 
@@ -96,7 +96,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Appointment booked successfully",
+  "message": "Appointment booked successfully.",
   "data": {
     "appointment_id": "id of appointment",
     "patient": "patient's username",
@@ -114,7 +114,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "error": "Missing slot ID"
+  "error": "Missing slot ID."
 }
 ```
 
@@ -122,7 +122,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "error": "Slot is already booked"
+  "error": "Slot is already booked."
 }
 ```
 
@@ -145,7 +145,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Appointment rescheduled succesfully",
+  "message": "Appointment rescheduled succesfully.",
   "data": {
     "appointment_id": "id of appointment",
     "patient": "patient's username",
@@ -158,13 +158,29 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 }
 ```
 
-- **status**: `200 OK`
+**status**: `200 OK`
 
 **error**:
 
 ```json
 {
-  "error": "Missing slot ID"
+  "error": "Appointment does not exist."
+}
+```
+
+**status**: `400 Bad Request`
+
+```json
+{
+  "error": "You are not authorized to reschedule the appointment."
+}
+```
+
+**status**: `400 Bad Request`
+
+```json
+{
+  "error": "Missing slot ID."
 }
 ```
 
@@ -176,7 +192,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 }
 ```
 
-## **status**: `422 unprocessable entity`
+**status**: `422 unprocessable entity`
 
 ---
 
@@ -187,7 +203,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 #### Parameters:
 
-- `appointment_id`: id of the appointment to cancel.
+- `appointment_id`: ID of the appointment to cancel.
 
 #### Response:
 
@@ -199,7 +215,15 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "error": "Appointment does not exist"
+  "error": "Appointment does not exist."
+}
+```
+
+**status**: `400 Bad Request`
+
+```json
+{
+  "error": "You are not authorized to reschedule the appointment."
 }
 ```
 

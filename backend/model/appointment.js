@@ -28,15 +28,16 @@ export async function bookAppointmentDB(patient, slotId) {
   return appointmentResult.rows[0];
 }
 
-export async function rescheduleAppointmentDB(appointmentId, newSlotId) {
-  await pool.query("BEGIN");
-
-  const appointmentResult = await pool.query(
+export async function getAppointment(appointmentId) {
+  const result = await pool.query(
     "SELECT * FROM appointments WHERE appointment_id = $1",
     [appointmentId]
   );
-  if (appointmentResult.rowCount === 0)
-    throw new Error("Appointment does not exist.");
+  return result.rows[0];
+}
+
+export async function rescheduleAppointmentDB(appointmentId, newSlotId) {
+  await pool.query("BEGIN");
 
   const newSlotResult = await pool.query(
     "SELECT * FROM time_slots WHERE slot_id = $1 FOR UPDATE",

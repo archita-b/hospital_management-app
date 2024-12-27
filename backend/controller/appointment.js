@@ -1,6 +1,7 @@
 import {
   bookAppointmentDB,
   cancelAppointmentDB,
+  getAppointment,
   rescheduleAppointmentDB,
 } from "../model/appointment.js";
 import { checkPatientExists } from "../model/patients.js";
@@ -43,6 +44,18 @@ export async function bookAppointment(req, res, next) {
 export async function rescheduleAppointment(req, res, next) {
   try {
     const appointmentId = req.params.id;
+
+    const appointment = await getAppointment(appointmentId);
+    if (!appointment) {
+      return res.status(400).json({ error: "Appointment does not exist." });
+    }
+
+    if (appointment.patient !== req.userName) {
+      return res.status(400).json({
+        error: "You are not authorized to reschedule the appointment.",
+      });
+    }
+
     const { newSlot } = req.body;
 
     if (!newSlot) {
@@ -76,6 +89,17 @@ export async function rescheduleAppointment(req, res, next) {
 export async function cancelAppointment(req, res, next) {
   try {
     const appointmentId = req.params.id;
+
+    const appointment = await getAppointment(appointmentId);
+    if (!appointment) {
+      return res.status(400).json({ error: "Appointment does not exist." });
+    }
+
+    if (appointment.patient !== req.userName) {
+      return res.status(400).json({
+        error: "You are not authorized to cancel the appointment.",
+      });
+    }
 
     await cancelAppointmentDB(appointmentId);
 
