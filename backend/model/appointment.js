@@ -27,3 +27,39 @@ export async function bookAppointmentDB(patient, slotId) {
 
   return appointmentResult.rows[0];
 }
+
+export async function rescheduleAppointmentDB(appointmentId, newSlotId) {
+  await pool.query("BEGIN");
+
+  const appointmentResult = await pool.query(
+    "SELECT * FROM appointments WHERE appointment_id = $1",
+    [appointmentId]
+  );
+  if (appointmentResult.rowCount === 0)
+    throw new Error("Appointment does not exist.");
+
+  const newSlotResult = await pool.query(
+    "SELECT * FROM time_slots WHERE slot_id = $1 FOR UPDATE",
+    [newSlotId]
+  );
+  if (newSlotResult.rowCount === 0) throw new Error("Invalid slot.");
+
+  const newSlotBookingResult = await pool.query(
+    "SELECT COUNT(*) AS count FROM appointments WHERE slot = $1",
+    [newSlotId]
+  );
+
+  if (Number(newSlotBookingResult.rows[0].count) > 0)
+    throw new Error("Slot is already booked.");
+
+  const rescheduledAppointment = await pool.query(
+    `UPDATE appointments SET slot = $1, status = 'rescheduled', 
+        updated_at = CURRENT_TIMESTAMP
+        WHERE appointment_id = $2 RETURNING *`,
+    [newSlotId, appointmentId]
+  );
+
+  await pool.query("COMMIT");
+
+  return rescheduledAppointment.rows[0];
+}

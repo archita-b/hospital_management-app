@@ -40,3 +40,11 @@ export async function registerPatientDB(
     dob: patientResult.rows[0].dob,
   };
 }
+
+export async function checkPatientExists(patient) {
+  const result = await pool.query(
+    "SELECT patient FROM patients WHERE patient = $1",
+    [patient]
+  );
+  return result.rowCount > 0;
+}
