@@ -1,5 +1,6 @@
 import {
   bookAppointmentDB,
+  cancelAppointmentDB,
   rescheduleAppointmentDB,
 } from "../model/appointment.js";
 import { checkPatientExists } from "../model/patients.js";
@@ -76,6 +77,18 @@ export async function rescheduleAppointment(req, res, next) {
       return res.status(422).json({ error: error.message });
     }
 
+    next(error);
+  }
+}
+
+export async function cancelAppointment(req, res, next) {
+  try {
+    const appointmentId = req.params.id;
+
+    await cancelAppointmentDB(appointmentId);
+    res.sendStatus(204);
+  } catch (error) {
+    console.log("Error in cancelAppointment controller.");
     next(error);
   }
 }

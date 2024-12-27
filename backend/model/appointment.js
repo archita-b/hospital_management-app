@@ -63,3 +63,20 @@ export async function rescheduleAppointmentDB(appointmentId, newSlotId) {
 
   return rescheduledAppointment.rows[0];
 }
+
+export async function cancelAppointmentDB(appointmentId) {
+  const appointmentResult = await pool.query(
+    "SELECT * FROM appointments WHERE appointment_id = $1",
+    [appointmentId]
+  );
+  if (appointmentResult.rowCount === 0)
+    throw new Error("Appointment does not exist.");
+
+  const result = await pool.query(
+    `UPDATE appointments SET status = 'cancelled' WHERE appointment_id = $1`,
+    [appointmentId]
+  );
+
+  if (result.rowCount !== 1) throw new Error("Error cancelling appointment.");
+  return result.rowCount;
+}

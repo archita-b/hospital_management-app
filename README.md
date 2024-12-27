@@ -59,7 +59,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ### 4. Reschedule an appointment
 
-**Endpoint**: `PUT /appointment/${appointment_id}`
+**Endpoint**: `PUT /appointments/${appointment_id}`
 **Description**: Reschedules an existing appointment.
 
 #### Parameters:
@@ -75,7 +75,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ### 5. Cancel an appointment
 
-**Endpoint**: `DELETE /appointment/${appointment_id}`
+**Endpoint**: `DELETE /appointments/${appointment_id}`
 **Description**: Cancels an existing appointment.
 
 #### Parameters:
