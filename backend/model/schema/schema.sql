@@ -18,6 +18,7 @@ CREATE TABLE patients (
 );
 
 CREATE TABLE doctors (
+    doctor_id SERIAL,
     doctor VARCHAR(100) PRIMARY KEY REFERENCES auth(username),
     full_name VARCHAR(100) NOT NULL,
     gender gender_enum NOT NULL,
