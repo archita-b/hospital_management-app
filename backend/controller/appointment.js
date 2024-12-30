@@ -47,11 +47,11 @@ export async function rescheduleAppointment(req, res, next) {
 
     const appointment = await getAppointment(appointmentId);
     if (!appointment) {
-      return res.status(400).json({ error: "Appointment does not exist." });
+      return res.status(404).json({ error: "Appointment does not exist." });
     }
 
     if (appointment.patient !== req.userName) {
-      return res.status(400).json({
+      return res.status(403).json({
         error: "You are not authorized to reschedule the appointment.",
       });
     }
@@ -92,11 +92,11 @@ export async function cancelAppointment(req, res, next) {
 
     const appointment = await getAppointment(appointmentId);
     if (!appointment) {
-      return res.status(400).json({ error: "Appointment does not exist." });
+      return res.status(404).json({ error: "Appointment does not exist." });
     }
 
     if (appointment.patient !== req.userName) {
-      return res.status(400).json({
+      return res.status(403).json({
         error: "You are not authorized to cancel the appointment.",
       });
     }
@@ -114,3 +114,4 @@ export async function cancelAppointment(req, res, next) {
     next(error);
   }
 }
+// after cancelling no rescheduling

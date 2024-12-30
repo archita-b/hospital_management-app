@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 
 import authRouter from "./routes/auth.js";
 import appointmentRouter from "./routes/appointment.js";
+import doctorRouter from "./routes/doctors.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,6 +13,7 @@ app.use(cookieParser());
 
 app.use("/api", authRouter);
 app.use("/api", appointmentRouter);
+app.use("/api", doctorRouter);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

@@ -13,7 +13,7 @@ export async function registerPatient(req, res, next) {
 
     const existingPatient = await getPatient(userName);
     if (existingPatient) {
-      return res.status(400).json({ error: "Username already exists." });
+      return res.status(422).json({ error: "Username already exists." });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -29,8 +29,8 @@ export async function registerPatient(req, res, next) {
     res.status(201).json({
       message: "Patient registered successfully.",
       data: {
-        fullName: response.fullName,
-        userName: response.userName,
+        fullName: response.full_name,
+        userName: response.user_name,
         gender: response.gender,
         dob: response.dob,
       },

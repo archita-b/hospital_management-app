@@ -23,13 +23,13 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-    "message": "Patient registered successfully.",
-    "data": {
-        "fullName": "patient's full name",
-        "userName": "patient's username,
-        "gender": "patient's gender",
-        "dob": "patient's dob"
-    }
+  "message": "Patient registered successfully.",
+  "data": {
+    "fullName": "patient's full name",
+    "userName": "patient's username",
+    "gender": "patient's gender",
+    "dob": "patient's dob"
+  }
 }
 ```
 
@@ -176,7 +176,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 }
 ```
 
-**status**: `400 Bad Request`
+**status**: `403 Forbidden`
 
 ```json
 {
@@ -227,4 +227,6 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 }
 ```
 
-**status**: `400 Bad Request`
+**status**: `403 Forbidden`
+
+<!-- getDoctors, getTimeSlotsForDoctor, getMyAppointments for both patients and doctors -->
