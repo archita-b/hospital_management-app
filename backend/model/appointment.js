@@ -1,6 +1,6 @@
 import pool from "./database.js";
 
-export async function bookAppointmentDB(patient, slotId) {
+export async function bookAppointmentDB(patientId, slotId) {
   await pool.query("BEGIN");
 
   const slotResult = await pool.query(
@@ -19,8 +19,8 @@ export async function bookAppointmentDB(patient, slotId) {
     throw new Error("Slot is already booked.");
 
   const appointmentResult = await pool.query(
-    "INSERT INTO appointments (patient, slot) VALUES ($1, $2) RETURNING *",
-    [patient, slotId]
+    "INSERT INTO appointments (patient_id, slot) VALUES ($1, $2) RETURNING *",
+    [patientId, slotId]
   );
 
   await pool.query("COMMIT");
@@ -38,6 +38,15 @@ export async function getAppointment(appointmentId) {
 
 export async function rescheduleAppointmentDB(appointmentId, newSlotId) {
   await pool.query("BEGIN");
+
+  const appointmentResult = await pool.query(
+    "SELECT status FROM appointments WHERE appointment_id = $1",
+    [appointmentId]
+  );
+
+  if (appointmentResult.rows[0].status === "cancelled") {
+    throw new Error("Cancelled appointment cannot be rescheduled.");
+  }
 
   const newSlotResult = await pool.query(
     "SELECT * FROM time_slots WHERE slot_id = $1 FOR UPDATE",

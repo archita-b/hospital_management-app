@@ -17,15 +17,15 @@ export async function registerPatientDB(
   await pool.query("BEGIN");
 
   const authQuery = `INSERT INTO auth (username, password) 
-                    VALUES ($1, $2) RETURNING username`;
+                    VALUES ($1, $2) RETURNING *`;
 
   const authResult = await pool.query(authQuery, [userName, password]);
 
-  const patientQuery = `INSERT INTO patients (patient, full_name, gender, dob) 
+  const patientQuery = `INSERT INTO patients (patient_id, full_name, gender, dob) 
                         VALUES ($1, $2, $3, $4) RETURNING *`;
 
   const patientResult = await pool.query(patientQuery, [
-    authResult.rows[0].username,
+    authResult.rows[0].user_id,
     fullName,
     gender,
     dob,
@@ -34,17 +34,18 @@ export async function registerPatientDB(
   await pool.query("COMMIT");
 
   return {
-    userName: authResult.rows[0].userName,
-    fullName: patientResult.rows[0].fullName,
+    userId: authResult.rows[0].user_id,
+    userName: authResult.rows[0].username,
+    fullName: patientResult.rows[0].full_name,
     gender: patientResult.rows[0].gender,
     dob: patientResult.rows[0].dob,
   };
 }
 
-export async function checkPatientExists(patient) {
+export async function checkPatientExists(patientId) {
   const result = await pool.query(
-    "SELECT patient FROM patients WHERE patient = $1",
-    [patient]
+    "SELECT patient_id FROM patients WHERE patient_id = $1",
+    [patientId]
   );
   return result.rowCount > 0;
 }

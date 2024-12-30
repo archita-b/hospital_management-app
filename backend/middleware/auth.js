@@ -9,7 +9,7 @@ export async function isLoggedIn(req, res, next) {
       return res.status(401).json({ error: "Invalid session." });
     }
 
-    req.userName = activeSession.username;
+    req.userId = activeSession.user_id;
     req.sessionId = activeSession.session_id;
     next();
   } catch (error) {

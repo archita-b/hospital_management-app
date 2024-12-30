@@ -4,15 +4,15 @@ INSERT INTO auth (username, password) VALUES
                  ('docB', '123456'),
                  ('docC', '123456');
 
-INSERT INTO doctors (doctor, full_name, gender, speciality) VALUES
-                 ('docA', 'doctor A', 'male', 'cardiology'),
-                 ('docB', 'doctor B', 'female', 'dermatology'),
-                 ('docC', 'doctor C', 'male', 'neurology');
+INSERT INTO doctors (doctor_id, full_name, gender, speciality) VALUES
+                 (10, 'doctor A', 'male', 'cardiology'),
+                 (11, 'doctor B', 'female', 'dermatology'),
+                 (12, 'doctor C', 'male', 'neurology');
 
-INSERT INTO time_slots (doctor, slot_date, start_time, duration) VALUES
-                 ('docA', '01-01-2025', '11:00', 30),
-                 ('docA', '01-01-2025', '11:30', 30),
-                 ('docB', '29-12-2024', '12:00', 30),
-                 ('docB', '29-12-2024', '14:00', 30),
-                 ('docC', '28-12-2024', '14:30', 45);
-                 ('docC', '28-12-2024', '15:30', 45);
+INSERT INTO time_slots (doctor_id, slot_date, start_time, duration) VALUES
+                 (10, '01-01-2025', '11:00', 30),
+                 (10, '01-01-2025', '11:30', 30),
+                 (11, '02-01-2025', '12:00', 30),
+                 (11, '02-01-2025', '14:00', 30),
+                 (12, '02-01-2025', '14:30', 45),
+                 (12, '03-01-2025', '15:30', 45);

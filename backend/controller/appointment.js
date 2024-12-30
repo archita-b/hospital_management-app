@@ -8,8 +8,9 @@ import { checkPatientExists } from "../model/patients.js";
 
 export async function bookAppointment(req, res, next) {
   try {
-    const patient = req.userName;
-    const doesPatientExist = await checkPatientExists(patient);
+    const patientId = req.userId;
+    const doesPatientExist = await checkPatientExists(patientId);
+
     if (!doesPatientExist) {
       return res.status(422).json({ error: "Patient does not exist." });
     }
@@ -20,7 +21,7 @@ export async function bookAppointment(req, res, next) {
       return res.status(400).json({ error: "Missing slot ID." });
     }
 
-    const appointmentDetails = await bookAppointmentDB(patient, slot);
+    const appointmentDetails = await bookAppointmentDB(patientId, slot);
 
     res.status(201).json({
       message: "Appointment booked successfully.",
@@ -50,7 +51,7 @@ export async function rescheduleAppointment(req, res, next) {
       return res.status(404).json({ error: "Appointment does not exist." });
     }
 
-    if (appointment.patient !== req.userName) {
+    if (appointment.patient_id !== req.userId) {
       return res.status(403).json({
         error: "You are not authorized to reschedule the appointment.",
       });
@@ -82,6 +83,10 @@ export async function rescheduleAppointment(req, res, next) {
       return res.status(422).json({ error: error.message });
     }
 
+    if (error.message === "Cancelled appointment cannot be rescheduled.") {
+      return res.status(422).json({ error: error.message });
+    }
+
     next(error);
   }
 }
@@ -95,7 +100,7 @@ export async function cancelAppointment(req, res, next) {
       return res.status(404).json({ error: "Appointment does not exist." });
     }
 
-    if (appointment.patient !== req.userName) {
+    if (appointment.patient_id !== req.userId) {
       return res.status(403).json({
         error: "You are not authorized to cancel the appointment.",
       });

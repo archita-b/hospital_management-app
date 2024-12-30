@@ -29,8 +29,9 @@ export async function registerPatient(req, res, next) {
     res.status(201).json({
       message: "Patient registered successfully.",
       data: {
-        fullName: response.full_name,
-        userName: response.user_name,
+        userId: response.userId,
+        userName: response.userName,
+        fullName: response.fullName,
         gender: response.gender,
         dob: response.dob,
       },
@@ -52,7 +53,7 @@ export async function login(req, res, next) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const { session_id: sessionId } = await createSession(user.username);
+    const { session_id: sessionId } = await createSession(user.user_id);
 
     res
       .cookie("sessionId", sessionId, {

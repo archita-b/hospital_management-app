@@ -8,7 +8,6 @@ export async function getDoctorsDB() {
 export async function getDoctorDetailsDB(doctorId) {
   const result = await pool.query(
     `SELECT 
-    doctors.doctor,
     doctors.full_name,
     doctors.gender,
     doctors.dob,
@@ -21,7 +20,7 @@ export async function getDoctorDetailsDB(doctorId) {
     time_slots.duration
     FROM doctors 
     INNER JOIN time_slots 
-    ON doctors.doctor = time_slots.doctor 
+    ON doctors.doctor_id = time_slots.doctor_id
     WHERE doctors.doctor_id = $1 AND deleted_at IS NULL`,
     [doctorId]
   );

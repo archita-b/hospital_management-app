@@ -2,7 +2,7 @@ import pool from "./database.js";
 
 export async function createSession(userId) {
   const result = await pool.query(
-    "INSERT INTO sessions (username) VALUES ($1) RETURNING session_id",
+    "INSERT INTO sessions (user_id) VALUES ($1) RETURNING session_id",
     [userId]
   );
   return result.rows[0];
