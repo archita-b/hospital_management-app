@@ -1,6 +1,6 @@
 import pool from "./database.js";
 
-export async function getPatient(userName) {
+export async function getUser(userName) {
   const result = await pool.query("SELECT * FROM auth WHERE username = $1", [
     userName,
   ]);

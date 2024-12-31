@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { getPatient, registerPatientDB } from "../model/patients.js";
+import { getUser, registerPatientDB } from "../model/patients.js";
 import { createSession, deleteSession } from "../model/sessions.js";
 
 export async function registerPatient(req, res, next) {
@@ -46,8 +46,10 @@ export async function login(req, res, next) {
   try {
     const { userName, password } = req.body;
 
-    const user = await getPatient(userName);
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    const user = await getUser(userName);
+    const isPasswordCorrect =
+      password === user.password ||
+      (await bcrypt.compare(password, user.password));
 
     if (!user || !isPasswordCorrect) {
       return res.status(401).json({ error: "Invalid username or password" });

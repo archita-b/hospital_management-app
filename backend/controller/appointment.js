@@ -3,8 +3,29 @@ import {
   cancelAppointmentDB,
   getAppointment,
   rescheduleAppointmentDB,
+  getAppointmentsForUser,
 } from "../model/appointment.js";
 import { checkPatientExists } from "../model/patients.js";
+
+export async function getMyAppointments(req, res, next) {
+  try {
+    const userId = req.userId;
+    const appointments = await getAppointmentsForUser(userId);
+
+    res.status(200).json({
+      message: "Fetched appointments for user.",
+      data: appointments,
+    });
+  } catch (error) {
+    console.log("Error in getMyAppointments controller.");
+
+    if (error.message === "User is not a patient or doctor.") {
+      return res.status(403).json({ error: error.message });
+    }
+
+    next(error);
+  }
+}
 
 export async function bookAppointment(req, res, next) {
   try {
