@@ -16,18 +16,29 @@ export async function getDoctors(req, res, next) {
 export async function getDoctorDetails(req, res, next) {
   try {
     const doctorId = req.params.id;
-    const response = await getDoctorDetailsDB(doctorId);
 
-    if (!response) {
-      return res.status(404).json({ error: "Doctor does not exist." });
+    const doctorDetails = await getDoctorDetailsDB(doctorId);
+
+    if (!doctorDetails) {
+      return res.status(404).json({ error: "Doctor not found." });
+    }
+
+    if (doctorDetails.availableTimeSlots.length === 0) {
+      return res.status(200).json({
+        message: "No slots available for the doctor.",
+        data: {
+          ...doctorDetails,
+          availableTimeSlots: [],
+        },
+      });
     }
 
     res.status(200).json({
-      message: "Fetched doctor's details succesfully.",
-      data: response,
+      message: "Doctor details fetched successfully.",
+      data: doctorDetails,
     });
   } catch (error) {
-    console.log("Error in getDoctorDetails controller.", error.message);
+    console.log("Error in getDoctorDetails controller:", error.message);
     next(error);
   }
 }

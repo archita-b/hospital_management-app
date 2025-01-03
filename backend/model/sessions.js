@@ -3,66 +3,43 @@ import redisClient from "./redis.js";
 
 export async function createSession(userId) {
   const result = await pool.query(
-    "INSERT INTO sessions (user_id) VALUES ($1) RETURNING session_id",
+    "INSERT INTO sessions (user_id) VALUES ($1) RETURNING *",
     [userId]
   );
   const session = result.rows[0];
 
-  redisClient.set(
-    `session:${session.session_id}`,
-    24 * 60 * 60,
-    JSON.stringify(session)
-  );
+  redisClient.set(`session:${session.session_id}`, JSON.stringify(session), {
+    EX: 24 * 60 * 60,
+  });
 
   return session;
 }
 
 export async function getSession(sessionId) {
-  const result = await pool.query(
-    "SELECT * FROM sessions WHERE session_id = $1",
-    [sessionId]
-  );
-  const session = result.rows[0];
-  return session;
+  let result = null;
 
-  return new Promise((resolve, reject) => {
-    redisClient.get(`session:${sessionId}`, async (err, cachedSession) => {
-      if (err) return reject(err);
+  const value = await redisClient.get(`session:${sessionId}`);
 
-      if (cachedSession) {
-        console.log("Session retrieved from cache.");
-        return resolve(JSON.parse(cachedSession));
-      }
+  if (value) {
+    result = JSON.parse(value);
+    console.log("Cache hit.");
+  } else {
+    result = await pool.query("SELECT * FROM sessions WHERE session_id = $1", [
+      sessionId,
+    ]);
 
-      const result = await pool.query(
-        "SELECT * FROM sessions WHERE session_id = $1",
-        [sessionId]
-      );
+    const session = result.rows[0];
 
-      if (result.rowCount === 0) {
-        return resolve(null);
-      }
-
-      const session = result.rows[0];
-
-      redisClient.set(
-        `session:${sessionId}`,
-        24 * 60 * 60,
-        JSON.stringify(session)
-      );
-      console.log("Session retrieved from postgres and cached in Redis.");
-
-      resolve(session);
+    await redisClient.set(`session:${sessionId}`, JSON.stringify(session), {
+      EX: 24 * 60 * 60,
     });
-  });
+    console.log("Cache miss.");
+  }
+  return result;
 }
 
 export async function deleteSession(sessionId) {
-  redisClient.del(`session:${sessionId}`, (err) => {
-    if (err) {
-      console.log("Error in deleting session in Redis:", err);
-    }
-  });
+  redisClient.del(`session:${sessionId}`);
 
   await pool.query("DELETE FROM sessions WHERE session_id = $1", [sessionId]);
 }

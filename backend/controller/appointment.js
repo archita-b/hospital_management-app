@@ -19,7 +19,7 @@ export async function getMyAppointments(req, res, next) {
   } catch (error) {
     console.log("Error in getMyAppointments controller.", error.message);
 
-    if (error.message === "User is not a patient or doctor.") {
+    if (error.message === "User is neither a patient nor a doctor.") {
       return res.status(403).json({ error: error.message });
     }
 

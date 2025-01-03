@@ -290,7 +290,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Fetched doctor's details succesfully.",
+  "message": "Doctor details fetched successfully.",
   "data": {
     "full_name": "doctor A",
     "gender": "male",
@@ -298,10 +298,11 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
     "speciality": "cardiology",
     "description": null,
     "fees": null,
-    "slot_id": 1,
-    "slot_date": "2024-12-31T18:30:00.000Z",
-    "start_time": "11:00:00",
-    "duration": 30
+    "availableTimeSlots": [
+      {
+        "slot_id": 1
+      }
+    ]
   }
 }
 ```

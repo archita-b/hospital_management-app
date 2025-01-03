@@ -2,12 +2,12 @@ import pool from "./database.js";
 
 export async function getAppointmentsForUser(userId) {
   let result;
-  const ifUserIsPatient = await pool.query(
+  const isUserPatient = await pool.query(
     "SELECT patient_id FROM patients WHERE patient_id = $1",
     [userId]
   );
 
-  if (ifUserIsPatient.rowCount === 1) {
+  if (isUserPatient.rowCount === 1) {
     result = await pool.query(
       "SELECT * FROM appointments WHERE patient_id = $1",
       [userId]
@@ -15,12 +15,12 @@ export async function getAppointmentsForUser(userId) {
     return result.rows;
   }
 
-  const ifUserIsDoctor = await pool.query(
+  const isUserDoctor = await pool.query(
     "SELECT doctor_id FROM doctors WHERE doctor_id = $1",
     [userId]
   );
 
-  if (ifUserIsDoctor.rowCount === 1) {
+  if (isUserDoctor.rowCount === 1) {
     result = await pool.query(
       `SELECT * FROM appointments 
                       INNER JOIN time_slots 
@@ -33,7 +33,7 @@ export async function getAppointmentsForUser(userId) {
     return result.rows;
   }
 
-  throw new Error("User is not a patient or doctor.");
+  throw new Error("User is neither a patient nor a doctor.");
 }
 
 export async function bookAppointmentDB(patientId, slotId) {
