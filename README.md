@@ -25,10 +25,11 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 {
   "message": "Patient registered successfully.",
   "data": {
-    "fullName": "patient's full name",
-    "userName": "patient's username",
-    "gender": "patient's gender",
-    "dob": "patient's dob"
+    "userId": 13,
+    "userName": "patient6",
+    "fullName": "Patient six",
+    "gender": "female",
+    "dob": "1994-12-31T18:30:00.000Z"
   }
 }
 ```
@@ -81,7 +82,18 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 3. Book an appointment
+### 3. Logout
+
+**Endpoint**: `DELETE /sessions`
+**Description**: Logs out a user.
+
+#### Response:
+
+**success**: `204 No Content`
+
+---
+
+### 4. Book an appointment
 
 **Endpoint**: `POST /appointments/me`
 **Description**: Books an appointment with a doctor.
@@ -98,12 +110,12 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 {
   "message": "Appointment booked successfully.",
   "data": {
-    "appointment_id": "id of appointment",
-    "patient": "patient's username",
-    "doctor": "doctor's username",
-    "slot": "id of the slot booked",
+    "appointment_id": 2,
+    "patient_id": 13,
+    "slot": 2,
     "status": "scheduled",
-    "created_at": "timestamp when appointment is booked"
+    "created_at": "2025-01-02T10:32:40.766Z",
+    "updated_at": null
   }
 }
 ```
@@ -130,7 +142,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 4. Reschedule an appointment
+### 5. Reschedule an appointment
 
 **Endpoint**: `PUT /appointments/${appointment_id}`
 **Description**: Reschedules an existing appointment.
@@ -145,15 +157,14 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Appointment rescheduled succesfully.",
+  "message": "Appointment rescheduled successfully.",
   "data": {
-    "appointment_id": "id of appointment",
-    "patient": "patient's username",
-    "doctor": "doctor's username",
-    "slot": "id of the slot booked",
+    "appointment_id": 2,
+    "patient_id": 13,
+    "slot": 3,
     "status": "rescheduled",
-    "created_at": "timestamp when appointment is booked",
-    "updated_at": "timestamp when appointment is rescheduled"
+    "created_at": "2025-01-02T10:32:40.766Z",
+    "updated_at": "2025-01-02T10:34:12.634Z"
   }
 }
 ```
@@ -196,7 +207,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 5. Cancel an appointment
+### 6. Cancel an appointment
 
 **Endpoint**: `DELETE /appointments/${appointment_id}`
 **Description**: Cancels an existing appointment.
@@ -229,4 +240,119 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 **status**: `403 Forbidden`
 
-<!-- getDoctors, getTimeSlotsForDoctor, getMyAppointments for both patients and doctors -->
+---
+
+### 7. Get doctors
+
+**Endpoint**: `GET /doctors`
+**Description**: Fetches doctors list.
+
+#### Response:
+
+**success**:
+
+```json
+{
+  "message": "Fetched doctors list.",
+  "data": [
+    {
+      "full_name": "doctor A",
+      "speciality": "cardiology"
+    },
+    {
+      "full_name": "doctor B",
+      "speciality": "dermatology"
+    },
+    {
+      "full_name": "doctor C",
+      "speciality": "neurology"
+    }
+  ]
+}
+```
+
+**status**: `200 OK`
+
+---
+
+### 8. Get doctor's details
+
+**Endpoint**: `GET /doctors/${doctor_id}`
+**Description**: Fetches one specific doctor's details.
+
+#### Parameters:
+
+- `doctor_id`: ID of the doctor whose details will be fetched.
+
+#### Response:
+
+**success**:
+
+```json
+{
+  "message": "Fetched doctor's details succesfully.",
+  "data": {
+    "full_name": "doctor A",
+    "gender": "male",
+    "dob": null,
+    "speciality": "cardiology",
+    "description": null,
+    "fees": null,
+    "slot_id": 1,
+    "slot_date": "2024-12-31T18:30:00.000Z",
+    "start_time": "11:00:00",
+    "duration": 30
+  }
+}
+```
+
+**status**: `200 OK`
+
+**error**:
+
+```json
+{
+  "error": "Doctor does not exist."
+}
+```
+
+**status**: `404 Not Found`
+
+---
+
+### 9. Get appointments for patient or doctor
+
+**Endpoint**: `GET /appointments`
+**Description**: Fetches appointments for a patient or a doctor.
+
+#### Response:
+
+**success**:
+
+```json
+{
+  "message": "Fetched appointments for user.",
+  "data": [
+    {
+      "appointment_id": 1,
+      "patient_id": 5,
+      "slot": 1,
+      "status": "cancelled",
+      "created_at": "2024-12-30T13:48:00.565Z",
+      "updated_at": "2024-12-30T14:28:44.900Z"
+    }
+  ]
+}
+```
+
+**status**: `200 OK`
+
+**error**:
+
+```json
+{
+  "error": "User is not a patient or doctor."
+}
+```
+
+**status**: `403 Forbidden`

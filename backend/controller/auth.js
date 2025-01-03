@@ -11,7 +11,7 @@ export async function registerPatient(req, res, next) {
       return res.status(400).json({ error: "All fields are required." });
     }
 
-    const existingPatient = await getPatient(userName);
+    const existingPatient = await getUser(userName);
     if (existingPatient) {
       return res.status(422).json({ error: "Username already exists." });
     }
@@ -37,7 +37,7 @@ export async function registerPatient(req, res, next) {
       },
     });
   } catch (error) {
-    console.log("Error in registerPatient controller");
+    console.log("Error in registerPatient controller:", error.message);
     next(error);
   }
 }
@@ -48,7 +48,7 @@ export async function login(req, res, next) {
 
     const user = await getUser(userName);
     const isPasswordCorrect =
-      password === user.password ||
+      String(password) === String(user.password) ||
       (await bcrypt.compare(password, user.password));
 
     if (!user || !isPasswordCorrect) {
@@ -67,7 +67,7 @@ export async function login(req, res, next) {
         message: "Session created.",
       });
   } catch (error) {
-    console.log("Error in login controller");
+    console.log("Error in login controller:", error.message);
     next(error);
   }
 }
@@ -81,7 +81,7 @@ export async function logout(req, res, next) {
     res.clearCookie("sessionId");
     res.sendStatus(204);
   } catch (error) {
-    console.log("Error in logout controller.");
+    console.log("Error in logout controller:", error.message);
     next(error);
   }
 }

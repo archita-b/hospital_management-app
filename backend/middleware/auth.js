@@ -13,7 +13,7 @@ export async function isLoggedIn(req, res, next) {
     req.sessionId = activeSession.session_id;
     next();
   } catch (error) {
-    console.log("Error in auth middleware.");
+    console.log("Error in auth middleware:", error.message);
     next(error);
   }
 }

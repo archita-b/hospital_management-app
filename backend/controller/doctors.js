@@ -8,7 +8,7 @@ export async function getDoctors(req, res, next) {
       data: doctors,
     });
   } catch (error) {
-    console.log("Error in getDoctors controller.");
+    console.log("Error in getDoctors controller.", error.message);
     next(error);
   }
 }
@@ -27,7 +27,7 @@ export async function getDoctorDetails(req, res, next) {
       data: response,
     });
   } catch (error) {
-    console.log("Error in getDoctorDetails controller.");
+    console.log("Error in getDoctorDetails controller.", error.message);
     next(error);
   }
 }
