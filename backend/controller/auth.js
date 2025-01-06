@@ -55,7 +55,7 @@ export async function login(req, res, next) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const { session_id: sessionId } = await createSession(user.user_id);
+    const sessionId = await createSession(user.user_id);
 
     res
       .cookie("sessionId", sessionId, {

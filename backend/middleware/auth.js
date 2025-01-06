@@ -9,8 +9,8 @@ export async function isLoggedIn(req, res, next) {
       return res.status(401).json({ error: "Invalid session." });
     }
 
-    req.userId = activeSession.user_id;
-    req.sessionId = activeSession.session_id;
+    req.userId = activeSession.userId;
+    req.sessionId = sessionId;
     next();
   } catch (error) {
     console.log("Error in auth middleware:", error.message);
