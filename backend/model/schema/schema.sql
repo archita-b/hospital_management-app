@@ -48,10 +48,7 @@ CREATE TABLE appointments (
     updated_at TIMESTAMP
 );
 
-CREATE TABLE sessions (
-    user_id INT REFERENCES auth(user_id),
-    session_id UUID PRIMARY KEY DEFAULT gen_random_uuid()
-);
+
 
 
 

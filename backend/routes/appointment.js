@@ -10,7 +10,7 @@ import { isLoggedIn } from "../middleware/auth.js";
 
 const router = express.Router();
 
-router.get("/appointments", isLoggedIn, getMyAppointments);
+router.get("/appointments/me", isLoggedIn, getMyAppointments);
 router.post("/appointments/me", isLoggedIn, bookAppointment);
 router.put("/appointments/:id", isLoggedIn, rescheduleAppointment);
 router.delete("/appointments/:id", isLoggedIn, cancelAppointment);

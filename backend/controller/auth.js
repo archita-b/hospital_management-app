@@ -26,16 +26,7 @@ export async function registerPatient(req, res, next) {
       gender,
       dob
     );
-    res.status(201).json({
-      message: "Patient registered successfully.",
-      data: {
-        userId: response.userId,
-        userName: response.userName,
-        fullName: response.fullName,
-        gender: response.gender,
-        dob: response.dob,
-      },
-    });
+    res.status(201).json(response);
   } catch (error) {
     console.log("Error in registerPatient controller:", error.message);
     next(error);

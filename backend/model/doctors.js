@@ -1,7 +1,8 @@
 import pool from "./database.js";
 
 export async function getDoctorsDB() {
-  const result = await pool.query("SELECT full_name, speciality FROM doctors");
+  const result = await pool.query(`SELECT doctor_id, full_name, speciality
+                                      FROM doctors`);
   return result.rows;
 }
 
@@ -24,9 +25,12 @@ export async function getDoctorDetailsDB(doctorId) {
   }
 
   const timeSlotsResult = await pool.query(
-    `SELECT time_slots.slot_id FROM time_slots
-      INNER JOIN appointments
-        ON time_slots.slot_id = appointments.slot
+    `SELECT 
+        time_slots.slot_id,
+        time_slots.slot_date,
+        time_slots.duration
+    FROM time_slots
+    INNER JOIN appointments ON time_slots.slot_id = appointments.slot
       WHERE time_slots.doctor_id = $1
         AND (appointments.slot IS NULL OR appointments.status = 'cancelled')`,
     [doctorId]
@@ -35,7 +39,9 @@ export async function getDoctorDetailsDB(doctorId) {
   const doctorDetails = doctorDetailsResult.rows[0];
 
   const availableTimeSlots = timeSlotsResult.rows.map((row) => ({
-    slot_id: row.slot_id,
+    slotId: row.slot_id,
+    slotDate: row.slot_date,
+    duration: row.duration,
   }));
 
   return {

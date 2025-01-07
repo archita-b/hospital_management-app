@@ -9,7 +9,20 @@ export async function getAppointmentsForUser(userId) {
 
   if (isUserPatient.rowCount === 1) {
     result = await pool.query(
-      "SELECT * FROM appointments WHERE patient_id = $1",
+      `SELECT 
+          appointments.appointment_id,
+          doctors.full_name AS doctor_name,
+          patients.patient_id,
+          patients.full_name AS patient_name,
+          time_slots.slot_date,
+          time_slots.start_time,
+          time_slots.duration,
+          appointments.status
+      FROM appointments
+      INNER JOIN time_slots ON appointments.slot = time_slots.slot_id
+      INNER JOIN doctors ON doctors.doctor_id = time_slots.doctor_id
+      INNER JOIN patients ON patients.patient_id = appointments.patient_id
+          WHERE appointments.patient_id = $1`,
       [userId]
     );
     return result.rows;
@@ -22,12 +35,20 @@ export async function getAppointmentsForUser(userId) {
 
   if (isUserDoctor.rowCount === 1) {
     result = await pool.query(
-      `SELECT * FROM appointments 
-                      INNER JOIN time_slots 
-                      ON time_slots.slot_id = appointments.slot 
-                      INNER JOIN doctors 
-                      ON doctors.doctor_id = time_slots.doctor_id
-                      WHERE doctors.doctor_id = $1`,
+      `SELECT 
+          appointments.appointment_id,
+          doctors.full_name AS doctor_name,
+          patients.patient_id,
+          patients.full_name AS patient_name,
+          time_slots.slot_date,
+          time_slots.start_time,
+          time_slots.duration,
+        appointments.status
+      FROM appointments
+      INNER JOIN time_slots ON appointments.slot = time_slots.slot_id
+      INNER JOIN doctors ON doctors.doctor_id = time_slots.doctor_id
+      INNER JOIN patients ON patients.patient_id = appointments.patient_id
+          WHERE doctors.doctor_id = $1`,
       [userId]
     );
     return result.rows;
@@ -59,9 +80,29 @@ export async function bookAppointmentDB(patientId, slotId) {
     [patientId, slotId]
   );
 
+  const { appointment_id } = appointmentResult.rows[0];
+
+  const appointmentDetails = await pool.query(
+    `SELECT 
+        appointments.appointment_id,
+        doctors.full_name AS doctor_name,
+        patients.patient_id,
+        patients.full_name AS patient_name,
+        time_slots.slot_date,
+        time_slots.start_time,
+        time_slots.duration,
+        appointments.status
+    FROM appointments
+    INNER JOIN time_slots ON appointments.slot = time_slots.slot_id
+    INNER JOIN doctors ON doctors.doctor_id = time_slots.doctor_id
+    INNER JOIN patients ON patients.patient_id = appointments.patient_id
+        WHERE appointments.appointment_id = $1`,
+    [appointment_id]
+  );
+
   await pool.query("COMMIT");
 
-  return appointmentResult.rows[0];
+  return appointmentDetails.rows[0];
 }
 
 export async function getAppointment(appointmentId) {
@@ -105,9 +146,29 @@ export async function rescheduleAppointmentDB(appointmentId, newSlotId) {
     [newSlotId, appointmentId]
   );
 
+  const { appointment_id } = rescheduledAppointment.rows[0];
+
+  const appointmentDetails = await pool.query(
+    `SELECT 
+        appointments.appointment_id,
+        patients.patient_id,
+        patients.full_name AS patient_name,
+        doctors.full_name AS doctor_name,
+        time_slots.slot_date,
+        time_slots.start_time,
+        time_slots.duration,
+        appointments.status
+    FROM appointments
+    INNER JOIN time_slots ON appointments.slot = time_slots.slot_id
+    INNER JOIN doctors ON doctors.doctor_id = time_slots.doctor_id
+    INNER JOIN patients ON patients.patient_id = appointments.patient_id
+       WHERE appointments.appointment_id = $1`,
+    [appointment_id]
+  );
+
   await pool.query("COMMIT");
 
-  return rescheduledAppointment.rows[0];
+  return appointmentDetails.rows[0];
 }
 
 export async function cancelAppointmentDB(appointmentId) {

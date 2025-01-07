@@ -1,7 +1,7 @@
 import {
   bookAppointmentDB,
-  cancelAppointmentDB,
   getAppointment,
+  cancelAppointmentDB,
   rescheduleAppointmentDB,
   getAppointmentsForUser,
 } from "../model/appointment.js";
@@ -12,10 +12,7 @@ export async function getMyAppointments(req, res, next) {
     const userId = req.userId;
     const appointments = await getAppointmentsForUser(userId);
 
-    res.status(200).json({
-      message: "Fetched appointments for user.",
-      data: appointments,
-    });
+    res.status(200).json(appointments);
   } catch (error) {
     console.log("Error in getMyAppointments controller.", error.message);
 
@@ -44,10 +41,7 @@ export async function bookAppointment(req, res, next) {
 
     const appointmentDetails = await bookAppointmentDB(patientId, slot);
 
-    res.status(201).json({
-      message: "Appointment booked successfully.",
-      data: appointmentDetails,
-    });
+    res.status(201).json(appointmentDetails);
   } catch (error) {
     console.log("Error in bookAppointment controller.", error.message);
 
@@ -66,6 +60,10 @@ export async function bookAppointment(req, res, next) {
 export async function rescheduleAppointment(req, res, next) {
   try {
     const appointmentId = req.params.id;
+
+    if (isNaN(appointmentId)) {
+      return res.status(400).json({ error: "Invalid appointment ID." });
+    }
 
     const appointment = await getAppointment(appointmentId);
     if (!appointment) {
@@ -89,10 +87,7 @@ export async function rescheduleAppointment(req, res, next) {
       newSlot
     );
 
-    res.status(200).json({
-      message: "Appointment rescheduled successfully.",
-      data: rescheduledAppointment,
-    });
+    res.status(200).json(rescheduledAppointment);
   } catch (error) {
     console.log("Error in rescheduleAppointment controller.", error.message);
 

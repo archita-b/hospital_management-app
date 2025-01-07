@@ -23,14 +23,11 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Patient registered successfully.",
-  "data": {
-    "userId": 13,
-    "userName": "patient6",
-    "fullName": "Patient six",
-    "gender": "female",
-    "dob": "1994-12-31T18:30:00.000Z"
-  }
+  "userId": 13,
+  "userName": "patient6",
+  "fullName": "Patient six",
+  "gender": "female",
+  "dob": "1994-12-31T18:30:00.000Z"
 }
 ```
 
@@ -108,15 +105,14 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Appointment booked successfully.",
-  "data": {
-    "appointment_id": 2,
-    "patient_id": 13,
-    "slot": 2,
-    "status": "scheduled",
-    "created_at": "2025-01-02T10:32:40.766Z",
-    "updated_at": null
-  }
+  "appointment_id": 5,
+  "doctor_name": "doctor B",
+  "patient_id": 7,
+  "patient_name": "Patient three",
+  "slot_date": "2024-12-28T18:30:00.000Z",
+  "start_time": "14:00:00",
+  "duration": 30,
+  "status": "scheduled"
 }
 ```
 
@@ -157,15 +153,14 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Appointment rescheduled successfully.",
-  "data": {
-    "appointment_id": 2,
-    "patient_id": 13,
-    "slot": 3,
-    "status": "rescheduled",
-    "created_at": "2025-01-02T10:32:40.766Z",
-    "updated_at": "2025-01-02T10:34:12.634Z"
-  }
+  "appointment_id": 5,
+  "patient_id": 7,
+  "patient_name": "Patient three",
+  "doctor_name": "doctor C",
+  "slot_date": "2024-12-27T18:30:00.000Z",
+  "start_time": "14:30:00",
+  "duration": 45,
+  "status": "rescheduled"
 }
 ```
 
@@ -252,23 +247,23 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 **success**:
 
 ```json
-{
-  "message": "Fetched doctors list.",
-  "data": [
-    {
-      "full_name": "doctor A",
-      "speciality": "cardiology"
-    },
-    {
-      "full_name": "doctor B",
-      "speciality": "dermatology"
-    },
-    {
-      "full_name": "doctor C",
-      "speciality": "neurology"
-    }
-  ]
-}
+[
+  {
+    "doctor_id": 10,
+    "full_name": "doctor A",
+    "speciality": "cardiology"
+  },
+  {
+    "doctor_id": 11,
+    "full_name": "doctor B",
+    "speciality": "dermatology"
+  },
+  {
+    "doctor_id": 12,
+    "full_name": "doctor C",
+    "speciality": "neurology"
+  }
+]
 ```
 
 **status**: `200 OK`
@@ -290,20 +285,19 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
-  "message": "Doctor details fetched successfully.",
-  "data": {
-    "full_name": "doctor A",
-    "gender": "male",
-    "dob": null,
-    "speciality": "cardiology",
-    "description": null,
-    "fees": null,
-    "availableTimeSlots": [
-      {
-        "slot_id": 1
-      }
-    ]
-  }
+  "full_name": "doctor B",
+  "gender": "female",
+  "dob": null,
+  "speciality": "dermatology",
+  "description": null,
+  "fees": null,
+  "availableTimeSlots": [
+    {
+      "slotId": 3,
+      "slotDate": "2024-12-28T18:30:00.000Z",
+      "duration": 30
+    }
+  ]
 }
 ```
 
@@ -331,19 +325,18 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 **success**:
 
 ```json
-{
-  "message": "Fetched appointments for user.",
-  "data": [
-    {
-      "appointment_id": 1,
-      "patient_id": 5,
-      "slot": 1,
-      "status": "cancelled",
-      "created_at": "2024-12-30T13:48:00.565Z",
-      "updated_at": "2024-12-30T14:28:44.900Z"
-    }
-  ]
-}
+[
+  {
+    "appointment_id": 5,
+    "doctor_name": "doctor C",
+    "patient_id": 7,
+    "patient_name": "Patient three",
+    "slot_date": "2024-12-27T18:30:00.000Z",
+    "start_time": "14:30:00",
+    "duration": 45,
+    "status": "rescheduled"
+  }
+]
 ```
 
 **status**: `200 OK`
