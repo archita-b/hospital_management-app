@@ -9,14 +9,14 @@ export async function getDoctorsDB() {
 export async function getDoctorDetailsDB(doctorId) {
   const doctorDetailsResult = await pool.query(
     `SELECT 
-      doctors.full_name,
-      doctors.gender,
-      doctors.dob,
-      doctors.speciality,
-      doctors.description,
-      doctors.fees
+      full_name,
+      gender,
+      dob,
+      speciality,
+      description,
+      fees
     FROM doctors
-    WHERE doctors.doctor_id = $1 AND doctors.deleted_at IS NULL`,
+    WHERE doctor_id = $1 AND deleted_at IS NULL`,
     [doctorId]
   );
 
@@ -31,7 +31,7 @@ export async function getDoctorDetailsDB(doctorId) {
         time_slots.duration
     FROM time_slots
     INNER JOIN appointments ON time_slots.slot_id = appointments.slot
-      WHERE time_slots.doctor_id = $1
+    WHERE time_slots.doctor_id = $1
         AND (appointments.slot IS NULL OR appointments.status = 'cancelled')`,
     [doctorId]
   );
@@ -53,4 +53,36 @@ export async function getDoctorDetailsDB(doctorId) {
     fees: doctorDetails.fees,
     availableTimeSlots,
   };
+}
+
+export async function getSpecialities() {
+  const result = await pool.query(`SELECT * FROM specialities`);
+  return result.rows;
+}
+
+export async function fetchDoctorsByTimeSlotsDB(
+  specialityId,
+  slotDate,
+  startTime
+) {
+  const result = await pool.query(
+    `SELECT 
+      doctors.doctor_id,
+      doctors.full_name,
+      doctors.gender,
+      doctors.fees,
+      time_slots.slot_id,
+      time_slots.slot_date,
+      time_slots.start_time
+    FROM doctors
+    INNER JOIN time_slots ON doctors.doctor_id = time_slots.slot_id
+    INNER JOIN appointments ON time_slots.slot_id = appointments.slot
+    WHERE doctors.speciality = $1 
+    AND time_slots.slot_date = $2 
+    AND time_slots.start_time = $3 
+    AND (appointments.slot IS NULL OR appointments.status = 'cancelled')`,
+    [specialityId, slotDate, startTime]
+  );
+
+  return result.rows;
 }

@@ -18,12 +18,17 @@ CREATE TABLE patients (
     deleted_at TIMESTAMP
 );
 
+CREATE TABLE specialities (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE doctors (
     doctor_id SERIAL PRIMARY KEY REFERENCES auth(user_id),
     full_name VARCHAR(100) NOT NULL,
     gender gender_enum NOT NULL,
     dob DATE,
-    speciality VARCHAR(100) NOT NULL,
+    speciality INT REFERENCES specialities(id),
     description VARCHAR(255),
     fees INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
