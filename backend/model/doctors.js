@@ -62,8 +62,8 @@ export async function getSpecialities() {
 
 export async function fetchDoctorsByTimeSlotsDB(
   specialityId,
-  slotDate,
-  startTime
+  startTime,
+  endTime
 ) {
   const result = await pool.query(
     `SELECT 
@@ -72,16 +72,14 @@ export async function fetchDoctorsByTimeSlotsDB(
       doctors.gender,
       doctors.fees,
       time_slots.slot_id,
-      time_slots.slot_date,
-      time_slots.start_time
+      time_slots.slot_time
     FROM doctors
-    INNER JOIN time_slots ON doctors.doctor_id = time_slots.slot_id
-    INNER JOIN appointments ON time_slots.slot_id = appointments.slot
+    INNER JOIN time_slots ON doctors.doctor_id = time_slots.doctor_id
+    LEFT JOIN appointments ON time_slots.slot_id = appointments.slot
     WHERE doctors.speciality = $1 
-    AND time_slots.slot_date = $2 
-    AND time_slots.start_time = $3 
+    AND time_slots.slot_time BETWEEN $2 AND $3 
     AND (appointments.slot IS NULL OR appointments.status = 'cancelled')`,
-    [specialityId, slotDate, startTime]
+    [specialityId, startTime, endTime]
   );
 
   return result.rows;

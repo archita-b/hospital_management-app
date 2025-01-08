@@ -39,8 +39,7 @@ CREATE TABLE doctors (
 CREATE TABLE time_slots (
     slot_id SERIAL PRIMARY KEY,
     doctor_id INT REFERENCES doctors(doctor_id),
-    slot_date DATE NOT NULL,
-    start_time TIME NOT NULL,
+    slot_time TIMESTAMP NOT NULL,
     duration INT NOT NULL CHECK (duration > 0)
 );
 
