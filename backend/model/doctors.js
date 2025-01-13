@@ -61,7 +61,7 @@ export async function getSpecialities() {
 }
 
 export async function fetchDoctorsByTimeSlotsDB(
-  specialityId,
+  speciality,
   startTime,
   endTime
 ) {
@@ -72,14 +72,17 @@ export async function fetchDoctorsByTimeSlotsDB(
       doctors.gender,
       doctors.fees,
       time_slots.slot_id,
-      time_slots.slot_time
+      time_slots.slot_time,
+      time_slots.duration
     FROM doctors
     INNER JOIN time_slots ON doctors.doctor_id = time_slots.doctor_id
+    INNER JOIN specialities ON doctors.speciality = specialities.id
     LEFT JOIN appointments ON time_slots.slot_id = appointments.slot
-    WHERE doctors.speciality = $1 
-    AND time_slots.slot_time BETWEEN $2 AND $3 
+    WHERE specialities.name = $1 
+    AND time_slots.slot_time >= $2 
+    AND (time_slots.slot_time + (time_slots.duration || ' minutes')::interval) <= $3
     AND (appointments.slot IS NULL OR appointments.status = 'cancelled')`,
-    [specialityId, startTime, endTime]
+    [speciality, startTime, endTime]
   );
 
   return result.rows;

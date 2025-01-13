@@ -4,7 +4,7 @@ import redisClient from "./redis.js";
 
 export async function createSession(userId) {
   const sessionId = uuidv4();
-  const session = { userId };
+  const session = { userId }; // store info about user is doctor or patient
 
   await redisClient.set(`session:${sessionId}`, JSON.stringify(session), {
     EX: 24 * 60 * 60,

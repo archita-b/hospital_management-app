@@ -44,10 +44,10 @@ export async function getDoctorDetails(req, res, next) {
 
 export async function fetchDoctorsByTimeSlots(req, res, next) {
   try {
-    const specialityId = req.params.id;
+    const speciality = req.params.name;
     const { startTime, endTime } = req.query;
 
-    if (isNaN(specialityId)) {
+    if (!speciality) {
       return res
         .status(400)
         .json({ error: "Invalid speciality of doctor requested." });
@@ -59,11 +59,16 @@ export async function fetchDoctorsByTimeSlots(req, res, next) {
         .json({ error: "Start time and end time are required." });
     }
 
-    const doctors = await fetchDoctorsByTimeSlotsDB(
-      specialityId,
-      startTime,
-      endTime
-    );
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    if (start >= end) {
+      return res.status(400).json({
+        error: "Start time must be earlier than end time.",
+      });
+    }
+
+    const doctors = await fetchDoctorsByTimeSlotsDB(speciality, start, end);
 
     if (doctors.length === 0) {
       return res

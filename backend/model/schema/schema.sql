@@ -20,7 +20,7 @@ CREATE TABLE patients (
 
 CREATE TABLE specialities (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE doctors (

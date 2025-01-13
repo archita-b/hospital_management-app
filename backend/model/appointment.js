@@ -14,8 +14,7 @@ export async function getAppointmentsForUser(userId) {
           doctors.full_name AS doctor_name,
           patients.patient_id,
           patients.full_name AS patient_name,
-          time_slots.slot_date,
-          time_slots.start_time,
+          time_slots.slot_time,
           time_slots.duration,
           appointments.status
       FROM appointments
@@ -40,8 +39,7 @@ export async function getAppointmentsForUser(userId) {
           doctors.full_name AS doctor_name,
           patients.patient_id,
           patients.full_name AS patient_name,
-          time_slots.slot_date,
-          time_slots.start_time,
+          time_slots.slot_time,
           time_slots.duration,
         appointments.status
       FROM appointments
@@ -88,8 +86,7 @@ export async function bookAppointmentDB(patientId, slotId) {
         doctors.full_name AS doctor_name,
         patients.patient_id,
         patients.full_name AS patient_name,
-        time_slots.slot_date,
-        time_slots.start_time,
+        time_slots.slot_time,
         time_slots.duration,
         appointments.status
     FROM appointments

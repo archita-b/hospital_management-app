@@ -350,3 +350,56 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 ```
 
 **status**: `403 Forbidden`
+
+---
+
+### 10. Get doctors by speciality and time slots
+
+**Endpoint**: `GET /doctors/specialities/${name}`
+**Description**: Fetches doctor's details and available time slots as per the patients choice.
+
+#### Response:
+
+**success**:
+
+```json
+[
+  {
+    "doctor_id": 10,
+    "full_name": "doctor A",
+    "gender": "male",
+    "fees": null,
+    "slot_id": 9,
+    "slot_time": "2025-01-25T03:30:00.000Z",
+    "duration": 30
+  }
+]
+```
+
+**status**: `200 OK`
+
+**error**:
+
+```json
+{ "error": "Invalid speciality of doctor requested." }
+```
+
+**status**: `400 Bad Request`
+
+```json
+{ "error": "Start time and end time are required." }
+```
+
+**status**: `400 Bad Request`
+
+```json
+{ "error": "Start time must be earlier than end time." }
+```
+
+**status**: `400 Bad Request`
+
+```json
+{ "error": "No doctors available for the selected time slot." }
+```
+
+**status**: `404 Not Found`
