@@ -1,5 +1,5 @@
 import {
-  bookAppointmentDB,
+  confirmAppointmentDB,
   getAppointment,
   cancelAppointmentDB,
   rescheduleAppointmentDB,
@@ -24,7 +24,7 @@ export async function getMyAppointments(req, res, next) {
   }
 }
 
-export async function bookAppointment(req, res, next) {
+export async function confirmAppointment(req, res, next) {
   try {
     const patientId = req.userId;
     const doesPatientExist = await checkPatientExists(patientId);
@@ -39,7 +39,7 @@ export async function bookAppointment(req, res, next) {
       return res.status(400).json({ error: "Missing slot ID." });
     }
 
-    const appointmentDetails = await bookAppointmentDB(patientId, slot);
+    const appointmentDetails = await confirmAppointmentDB(patientId, slot);
 
     res.status(201).json(appointmentDetails);
   } catch (error) {

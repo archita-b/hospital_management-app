@@ -55,7 +55,7 @@ export async function getAppointmentsForUser(userId) {
   throw new Error("User is neither a patient nor a doctor.");
 }
 
-export async function bookAppointmentDB(patientId, slotId) {
+export async function confirmAppointmentDB(patientId, slotId) {
   await pool.query("BEGIN");
 
   const slotResult = await pool.query(
