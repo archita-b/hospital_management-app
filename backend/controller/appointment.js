@@ -1,4 +1,5 @@
 import {
+  scheduleAppointmentDB,
   confirmAppointmentDB,
   getAppointment,
   cancelAppointmentDB,
@@ -24,7 +25,7 @@ export async function getMyAppointments(req, res, next) {
   }
 }
 
-export async function confirmAppointment(req, res, next) {
+export async function scheduleAppointment(req, res, next) {
   try {
     const patientId = req.userId;
     const doesPatientExist = await checkPatientExists(patientId);
@@ -39,9 +40,32 @@ export async function confirmAppointment(req, res, next) {
       return res.status(400).json({ error: "Missing slot ID." });
     }
 
-    const appointmentDetails = await confirmAppointmentDB(patientId, slot);
+    const appointmentDetails = await scheduleAppointmentDB(slot, patientId);
 
     res.status(201).json(appointmentDetails);
+  } catch (error) {
+    console.log("Error in scheduleAppointment controller.");
+
+    if (error.message === "Slot is temporarily locked.") {
+      res.status(422).json({ error: error.message });
+    }
+
+    next(error);
+  }
+}
+
+export async function confirmAppointment(req, res, next) {
+  try {
+    const { slot } = req.body;
+    const patientId = req.userId;
+
+    if (!slot) {
+      return res.status(400).json({ error: "Missing slot ID." });
+    }
+
+    const appointmentDetails = await confirmAppointmentDB(slot, patientId);
+
+    res.status(200).json(appointmentDetails);
   } catch (error) {
     console.log("Error in bookAppointment controller.", error.message);
 

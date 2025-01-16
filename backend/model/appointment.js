@@ -1,4 +1,7 @@
+import { v4 as uuidv4 } from "uuid";
+
 import pool from "./database.js";
+import redisClient from "./redis.js";
 
 export async function getAppointmentsForUser(userId) {
   let result;
@@ -55,7 +58,29 @@ export async function getAppointmentsForUser(userId) {
   throw new Error("User is neither a patient nor a doctor.");
 }
 
+export async function scheduleAppointmentDB(slotId, patientId) {
+  const isSlotLocked = await redisClient.get(`slot:${slotId}`);
+  if (isSlotLocked) {
+    throw new Error("Slot is temporarily locked.");
+  }
+
+  const appointmentId = uuidv4();
+
+  await redisClient.set(`slot:${slotId}`, appointmentId, {
+    EX: 600,
+  });
+
+  return appointmentId;
+}
+
 export async function confirmAppointmentDB(patientId, slotId) {
+  const appointmentKey = `slot:${slotId}`;
+  const tempAppointment = await redisClient.get(appointmentKey);
+
+  if (!tempAppointment) {
+    throw new Error("No scheduled appointment found.");
+  }
+
   await pool.query("BEGIN");
 
   const slotResult = await pool.query(
