@@ -65,12 +65,13 @@ export async function scheduleAppointmentDB(slotId, patientId) {
   }
 
   const appointmentId = uuidv4();
+  const value = JSON.stringify({ appointmentId, patientId });
 
-  await redisClient.set(`slot:${slotId}`, appointmentId, {
+  await redisClient.set(`slot:${slotId}`, value, {
     EX: 600,
   });
 
-  return appointmentId;
+  return { appointmentId };
 }
 
 export async function confirmAppointmentDB(patientId, slotId) {
@@ -79,6 +80,13 @@ export async function confirmAppointmentDB(patientId, slotId) {
 
   if (!tempAppointment) {
     throw new Error("No scheduled appointment found.");
+  }
+
+  const { appointmentId: redisAppointmentId, patientId: redisPatientId } =
+    JSON.parse(tempAppointment);
+
+  if (patientId !== redisPatientId) {
+    throw new Error("Unauthorized access to the slot.");
   }
 
   await pool.query("BEGIN");

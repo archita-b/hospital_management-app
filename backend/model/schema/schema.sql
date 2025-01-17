@@ -1,5 +1,5 @@
 CREATE TYPE gender_enum AS ENUM ('male', 'female', 'other');
-CREATE TYPE appointment_status AS ENUM ('scheduled', 'cancelled', 'rescheduled');
+CREATE TYPE appointment_status AS ENUM ('scheduled', 'cancelled', 'rescheduled', 'confirmed');
 
 -- only for form login
 CREATE TABLE auth (
