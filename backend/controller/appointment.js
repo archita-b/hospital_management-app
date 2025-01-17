@@ -67,7 +67,15 @@ export async function confirmAppointment(req, res, next) {
 
     res.status(200).json(appointmentDetails);
   } catch (error) {
-    console.log("Error in bookAppointment controller.", error.message);
+    console.log("Error in confirmAppointment controller.", error.message);
+
+    if (error.message === "No scheduled appointment found.") {
+      return res.status(422).json({ error: error.message });
+    }
+
+    if (error.message === "Unauthorized access to the slot.") {
+      return res.status(403).json({ error: error.message });
+    }
 
     if (error.message === "Invalid slot.") {
       return res.status(422).json({ error: error.message });

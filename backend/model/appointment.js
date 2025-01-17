@@ -68,15 +68,14 @@ export async function scheduleAppointmentDB(slotId, patientId) {
   const value = JSON.stringify({ appointmentId, patientId });
 
   await redisClient.set(`slot:${slotId}`, value, {
-    EX: 600,
+    EX: 900,
   });
 
   return { appointmentId };
 }
 
-export async function confirmAppointmentDB(patientId, slotId) {
-  const appointmentKey = `slot:${slotId}`;
-  const tempAppointment = await redisClient.get(appointmentKey);
+export async function confirmAppointmentDB(slotId, patientId) {
+  const tempAppointment = await redisClient.get(`slot:${slotId}`);
 
   if (!tempAppointment) {
     throw new Error("No scheduled appointment found.");

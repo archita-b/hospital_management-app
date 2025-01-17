@@ -90,10 +90,43 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 4. Book an appointment
+### 4. Schedule an appointment
 
-**Endpoint**: `POST /appointments/me`
-**Description**: Books an appointment with a doctor.
+**Endpoint**: `POST /appointments/me/schedule`
+**Description**: locks a time slot selected by the user in redis.
+
+#### Parameters:
+
+- `slot`: ID of the slot to be locked.
+
+#### Response:
+
+**success**:
+
+```json
+{
+  "appointmentId": "5a3116fa-16e1-44b8-8c75-f12e7bad9ef5"
+}
+```
+
+**status**: `201 Created`
+
+**error**:
+
+```json
+{
+  "error": "Slot is temporarily locked."
+}
+```
+
+**status**: `422 Unprocessable Entity`
+
+---
+
+### 5. Confirm an appointment
+
+**Endpoint**: `PUT /appointments/me/confirm`
+**Description**: creates a confirmed appointment record with a doctor.
 
 #### Parameters:
 
@@ -116,9 +149,25 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 }
 ```
 
-**status**: `201 created`
+**status**: `200 OK`
 
 **error**:
+
+```json
+{
+  "error": "No scheduled appointment found."
+}
+```
+
+**status**: `422 Unprecessable Entity`
+
+```json
+{
+  "error": "Unauthorized access to the slot."
+}
+```
+
+**status**: `403 Forbidden`
 
 ```json
 {
@@ -138,7 +187,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 5. Reschedule an appointment
+### 6. Reschedule an appointment
 
 **Endpoint**: `PUT /appointments/${appointment_id}`
 **Description**: Reschedules an existing appointment.
@@ -202,7 +251,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 6. Cancel an appointment
+### 7. Cancel an appointment
 
 **Endpoint**: `DELETE /appointments/${appointment_id}`
 **Description**: Cancels an existing appointment.
@@ -237,7 +286,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 7. Get doctors
+### 8. Get doctors
 
 **Endpoint**: `GET /doctors`
 **Description**: Fetches doctors list.
@@ -270,7 +319,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 8. Get doctor's details
+### 9. Get doctor's details
 
 **Endpoint**: `GET /doctors/${doctor_id}`
 **Description**: Fetches one specific doctor's details.
@@ -315,7 +364,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 9. Get appointments for patient or doctor
+### 10. Get appointments for patient or doctor
 
 **Endpoint**: `GET /appointments`
 **Description**: Fetches appointments for a patient or a doctor.
@@ -353,7 +402,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ---
 
-### 10. Get doctors by speciality and time slots
+### 11. Get doctors by speciality and time slots
 
 **Endpoint**: `GET /doctors/specialities/${name}`
 **Description**: Fetches doctor's details and available time slots as per the patients choice.

@@ -1,5 +1,5 @@
 CREATE TYPE gender_enum AS ENUM ('male', 'female', 'other');
-CREATE TYPE appointment_status AS ENUM ('scheduled', 'cancelled', 'rescheduled', 'confirmed');
+CREATE TYPE appointment_status AS ENUM ('confirmed', 'rescheduled', 'cancelled');
 
 -- only for form login
 CREATE TABLE auth (
@@ -47,7 +47,7 @@ CREATE TABLE appointments (
     appointment_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patients(patient_id),
     slot INT REFERENCES time_slots(slot_id),
-    status appointment_status DEFAULT 'scheduled',
+    status appointment_status DEFAULT 'confirmed',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
