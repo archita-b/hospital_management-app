@@ -12,8 +12,8 @@ import { isLoggedIn } from "../middleware/auth.js";
 const router = express.Router();
 
 router.get("/appointments/me", isLoggedIn, getMyAppointments);
-router.post("/appointments/me/schedule", isLoggedIn, scheduleAppointment);
-router.put("/appointments/me/confirm", isLoggedIn, confirmAppointment);
+router.post("/appointments/me", isLoggedIn, scheduleAppointment);
+router.put("/appointments/me", isLoggedIn, confirmAppointment);
 router.put("/appointments/:id", isLoggedIn, rescheduleAppointment);
 router.delete("/appointments/:id", isLoggedIn, cancelAppointment);
 

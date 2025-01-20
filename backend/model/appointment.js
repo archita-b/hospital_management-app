@@ -64,6 +64,15 @@ export async function scheduleAppointmentDB(slotId, patientId) {
     throw new Error("Slot is temporarily locked.");
   }
 
+  const bookingResult = await pool.query(
+    `SELECT COUNT(*) AS count FROM appointments 
+          WHERE slot = $1 AND status != 'cancelled'`,
+    [slotId]
+  );
+
+  if (Number(bookingResult.rows[0].count) > 0)
+    throw new Error("Slot is already booked.");
+
   const appointmentId = uuidv4();
   const value = JSON.stringify({ appointmentId, patientId });
 
@@ -74,7 +83,7 @@ export async function scheduleAppointmentDB(slotId, patientId) {
   return { appointmentId };
 }
 
-export async function confirmAppointmentDB(slotId, patientId) {
+export async function confirmAppointmentDB(slotId, patientId, appointmentId) {
   const tempAppointment = await redisClient.get(`slot:${slotId}`);
 
   if (!tempAppointment) {
@@ -83,6 +92,10 @@ export async function confirmAppointmentDB(slotId, patientId) {
 
   const { appointmentId: redisAppointmentId, patientId: redisPatientId } =
     JSON.parse(tempAppointment);
+
+  if (String(appointmentId) !== String(redisAppointmentId)) {
+    throw new Error("Appointment IDs don't match.");
+  }
 
   if (patientId !== redisPatientId) {
     throw new Error("Unauthorized access to the slot.");
@@ -98,7 +111,8 @@ export async function confirmAppointmentDB(slotId, patientId) {
   if (slotResult.rowCount === 0) throw new Error("Invalid slot.");
 
   const bookingResult = await pool.query(
-    "SELECT COUNT(*) AS count FROM appointments WHERE slot = $1",
+    `SELECT COUNT(*) AS count FROM appointments 
+          WHERE slot = $1 AND status != 'cancelled'`,
     [slotId]
   );
 

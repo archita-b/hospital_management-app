@@ -92,7 +92,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ### 4. Schedule an appointment
 
-**Endpoint**: `POST /appointments/me/schedule`
+**Endpoint**: `POST /appointments/me`
 **Description**: locks a time slot selected by the user in redis.
 
 #### Parameters:
@@ -115,7 +115,31 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ```json
 {
+  "error": "Patient does not exist."
+}
+```
+
+**status**: `403 Forbidden`
+
+```json
+{
+  "error": "Missing slot ID."
+}
+```
+
+**status**: `400 Bad Request`
+
+```json
+{
   "error": "Slot is temporarily locked."
+}
+```
+
+**status**: `422 Unprocessable Entity`
+
+```json
+{
+  "error": "Slot is already booked."
 }
 ```
 
@@ -125,7 +149,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 
 ### 5. Confirm an appointment
 
-**Endpoint**: `PUT /appointments/me/confirm`
+**Endpoint**: `PUT /appointments/me`
 **Description**: creates a confirmed appointment record with a doctor.
 
 #### Parameters:

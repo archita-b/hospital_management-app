@@ -31,7 +31,7 @@ export async function scheduleAppointment(req, res, next) {
     const doesPatientExist = await checkPatientExists(patientId);
 
     if (!doesPatientExist) {
-      return res.status(422).json({ error: "Patient does not exist." });
+      return res.status(403).json({ error: "Patient does not exist." });
     }
 
     const { slot } = req.body;
@@ -50,20 +50,28 @@ export async function scheduleAppointment(req, res, next) {
       res.status(422).json({ error: error.message });
     }
 
+    if (error.message === "Slot is already booked.") {
+      res.status(422).json({ error: error.message });
+    }
+
     next(error);
   }
 }
 
 export async function confirmAppointment(req, res, next) {
   try {
-    const { slot } = req.body;
+    const { slot, appointmentId } = req.body;
     const patientId = req.userId;
 
     if (!slot) {
       return res.status(400).json({ error: "Missing slot ID." });
     }
 
-    const appointmentDetails = await confirmAppointmentDB(slot, patientId);
+    const appointmentDetails = await confirmAppointmentDB(
+      slot,
+      patientId,
+      appointmentId
+    );
 
     res.status(200).json(appointmentDetails);
   } catch (error) {
@@ -71,6 +79,10 @@ export async function confirmAppointment(req, res, next) {
 
     if (error.message === "No scheduled appointment found.") {
       return res.status(422).json({ error: error.message });
+    }
+
+    if (error.message === "Appointment IDs don't match.") {
+      return res.status(404).json({ error: error.message });
     }
 
     if (error.message === "Unauthorized access to the slot.") {
