@@ -183,7 +183,7 @@ This API allows patients to register, log in, book, reschedule, or cancel appoin
 }
 ```
 
-**status**: `422 Unprecessable Entity`
+**status**: `422 Unprocessable Entity`
 
 ```json
 {

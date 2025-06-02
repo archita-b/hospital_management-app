@@ -4,7 +4,7 @@ INSERT INTO auth (username, password) VALUES
                  ('docB', '123456'),
                  ('docC', '123456');
 
-INSERT INTO specialities (title) VALUES 
+INSERT INTO specialities (name) VALUES 
                         ('cardiology'), ('dermatology'), ('neurology');
 
 INSERT INTO doctors (doctor_id, full_name, gender, speciality) VALUES
