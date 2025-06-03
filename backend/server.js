@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import authRouter from "./routes/auth.js";
 import appointmentRouter from "./routes/appointment.js";
@@ -10,6 +11,14 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "http://127.0.0.1:5500",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 
 app.use("/api", authRouter);
 app.use("/api", appointmentRouter);
